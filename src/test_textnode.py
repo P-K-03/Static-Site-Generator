@@ -9,6 +9,7 @@ class TestTextNode(unittest.TestCase):
         node2 = TextNode("This is a text node", TextType.BOLD)
         self.assertEqual(node, node2)
         
+    def test_eq_true(self):
         node = TextNode("Bird", TextType.IMAGE, "https://www.example.com/imgs/15")
         node2 = TextNode("Bird", TextType.IMAGE, "https://www.example.com/imgs/15")
         self.assertEqual(node, node2)
@@ -27,6 +28,12 @@ class TestTextNode(unittest.TestCase):
         node = TextNode("John", TextType.ITALIC, "/home/usr/name/")
         node2 = TextNode("John", TextType.ITALIC, "/usr/bin/name/")
         self.assertNotEqual(node, node2)
+
+    def test_repr(self):
+        node = TextNode("This is a text node", TextType.TEXT, "https://www.example.dev")
+        self.assertEqual(
+            "TextNode(This is a text node, text, https://www.example.dev)", repr(node)
+        )
 
 
 

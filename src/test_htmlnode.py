@@ -12,6 +12,28 @@ class TestHTMLNode(unittest.TestCase):
         node = HTMLNode("p", "This is a paragraph", ['a', 'a'], {"class" : "flex", "id" : "p01", "lang" : "en"})
         node2 = HTMLNode("p", "This is a paragraph", ['a', 'a'], {"class" : "flex", "id" : "p01", "lang" : "en"})
         self.assertEqual(node.props_to_html(), node2.props_to_html())
+    
+    def test_values(self):
+        node = HTMLNode(
+            "div",
+            "I wish I could read",
+        )
+        self.assertEqual(
+            node.tag,
+            "div",
+        )
+        self.assertEqual(
+            node.value,
+            "I wish I could read",
+        )
+        self.assertEqual(
+            node.children,
+            None,
+        )
+        self.assertEqual(
+            node.props,
+            None,
+        )
 
     def text_repr(self):
         node = HTMLNode("p", "This is a paragraph", ['a', 'a'], {"class" : "flex", "id" : "p01", "lang" : "en"})
@@ -24,3 +46,8 @@ class TestHTMLNode(unittest.TestCase):
         node = HTMLNode()
         with self.assertRaises(NotImplementedError):
             node.to_html()
+
+    
+
+if __name__ == "__main__":
+    unittest.main()
