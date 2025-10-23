@@ -8,17 +8,17 @@ class HTMLNode:
         self.props: Dict = props
 
     def to_html(self):
-        raise NotImplementedError
+        raise NotImplementedError("to_html method not implemented")
     
     def props_to_html(self):
-        html_string: str = " "  #initialized with space
+        prop_html: str = " "  #initialized with space
         if self.props is None:
-            return html_string
+            return prop_html
         
         for k,v in self.props.items():
-            html_string  = html_string + f"{k}={v} "   # space at the end
+            prop_html  += f"{k}={v} "   # space at the end
         
-        return html_string
+        return prop_html
     
     def __repr__(self):
         return f"HTMLNode(tag: {self.tag},\nvalue: {self.value},\nchildren: {self.children},\nprops: {self.props})"
