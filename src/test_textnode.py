@@ -54,7 +54,6 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(html_node.value, "This is an anchor node")
         self.assertEqual(html_node.props, {"href":"https://www.example.com"})
 
-
     def test_text_image(self):
         node = TextNode("This is an image node", TextType.IMAGE, "~/pictures/birds/bird01.jpg")
         html_node = text_node_to_html_node(node)
