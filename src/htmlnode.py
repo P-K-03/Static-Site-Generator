@@ -39,3 +39,41 @@ class LeafNode(HTMLNode):
     
     def __repr__(self):
         return f"LeafNode(tag: {self.tag}, value: {self.value}, props: {self.props})"
+
+
+class ParentNode(HTMLNode):
+    def __init__(self, tag: str, children: List[LeafNode], props: Dict = None):
+        super().__init__(tag, None, children, props)
+
+    def to_html(self):
+        if self.tag is None:
+            raise ValueError("All parent nodes must have a tag")
+        elif self.children is None:
+            raise ValueError("All parent nodes should atleast have one child")
+        children_html = ""
+        for child in self.children:
+            children_html += child.to_html()
+        return f"<{self.tag}{self.props_to_html()}>{children_html}</{self.tag}>"
+        
+    def __repr__(self):
+        return f"ParentNode({self.tag}, children: {self.children}, {self.props})"
+    
+
+    
+
+# node1 = LeafNode("a", "Link Text", {"href" : "https://www.example.com", "target" : "_blank"})
+# node2 = LeafNode("p", "Some paragraph text", {"class" : "shadowbox"})
+# node3 = ParentNode("div", [node1, node2], {"class" : "shadowbox"})
+# print(node3.to_html())
+
+# child_node_1 = LeafNode("code", 'fmt.println("Hello World")')
+# child_node_2 = LeafNode("a", "https://www.example.com")
+# child_node_3 = LeafNode("b", "Bold text")
+# parent_node_1 = ParentNode("div", [child_node_1])
+# parent_node_2 = ParentNode("caption", [child_node_2], {"align" : "bottom"})
+# parent_node_3 = ParentNode("q", [child_node_3], {"class" : "crumbs"})
+# grandparent_node_1 = ParentNode("div", [parent_node_1, parent_node_2, child_node_3], {"class" : "shadowbox"})
+# grandparent_node_2 = ParentNode("p", [parent_node_2, parent_node_3], {"id" : "p01"})
+                
+# print(grandparent_node_1.to_html())
+# print(grandparent_node_2.to_html())
