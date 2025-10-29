@@ -4,7 +4,7 @@ from htmlnode import HTMLNode, LeafNode, ParentNode
 
 class TestHTMLNode(unittest.TestCase):
     def test_empty_node_props_tohtml(self):
-        node = HTMLNode()
+        # node = HTMLNode()
         node2 = HTMLNode()
         self.assertEqual(node2.props_to_html(), "")
 
@@ -102,5 +102,5 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(grandparent_node_1.to_html(), '<div class=shadowbox><div><code>fmt.println("Hello World")</code></div><caption align=bottom><a>https://www.example.com</a></caption><b>Bold text</b></div>')
         self.assertEqual(grandparent_node_2.to_html(), '<p id=p01><caption align=bottom><a>https://www.example.com</a></caption><q class=crumbs><b>Bold text</b></q></p>') 
 
-    if __name__ == "__main__":
-        unittest.main()
+if __name__ == "__main__":
+    unittest.main()
