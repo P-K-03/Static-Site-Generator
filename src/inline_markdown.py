@@ -54,6 +54,63 @@ def extract_markdown_links(text: str):
     matches: List = re.findall(markdown_link_regex, text)
     return matches
 
+def split_nodes_image(old_nodes: List[TextNode]):
+    """"""
+    resultant_nodes: List = []
+    for node in old_nodes:
+        images: List = extract_markdown_images(node)
+        if len(images) == 0:
+            resultant_nodes.append(node)
+        else:
+            unprocessed_node: str = node
+            for x in images:
+                # x[0] has alt text and x[1] has the image URL
+                # split the node based on the extracted image, one image at a time
+                sub_nodes: List = unprocessed_node.split(f"![{x[0]}]({x[1]})")
+
+                # The list will have 2 elements, element 0 - text before the image, element 1 - text after the element. 
+                # Element 0 will either be some text or empty. element 2 can contain more images. process it in the next iteration
+                unprocessed_node = sub_nodes[-1]
+
+                # if the element is empty, don't create a TextNode
+                if sub_nodes[0] is not None:
+                # First add the Text as a TextNode and then add the image as the TextNode
+                    resultant_nodes.append(TextNode(sub_nodes[0], TextType.TEXT))
+                resultant_nodes.append(TextNode(x[0], TextType.IMAGE, x[1]))
+
+                # print(f"{x}, {sub_nodes}")
+
+    return resultant_nodes
+
+def split_nodes_link(old_nodes: List[TextNode]):
+    """"""
+    resultant_nodes: List = []
+    for node in old_nodes:
+        links: List = extract_markdown_links(node)
+        if len(links) == 0:
+            resultant_nodes.append(node)
+        else:
+            unprocessed_node: str = node
+            for x in links:
+                # x[0] has the title and x[1] has the link URL
+                # split the node based on the extracted link, one link at a time
+                sub_nodes: List = unprocessed_node.split(f"[{x[0]}]({x[1]})")
+
+                # The list will have 2 elements, element 0 - text before the link, element 1 - text after the element. 
+                # Element 0 will either be some text or empty. element 2 can contain more links. Process it in the next iteration
+                unprocessed_node = sub_nodes[-1]
+
+                # if the element is empty, don't create a TextNode
+                if sub_nodes[0] is not None:
+                # First add the Text as a TextNode and then add the link as the TextNode
+                    resultant_nodes.append(TextNode(sub_nodes[0], TextType.TEXT))
+                resultant_nodes.append(TextNode(x[0], TextType.LINK, x[1]))
+                
+                # print(f"{x}, {sub_nodes}")
+
+    return resultant_nodes
+
+
 # print(extract_markdown_images("This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"))
 # print(extract_markdown_links("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"))
 
@@ -67,3 +124,6 @@ def extract_markdown_links(text: str):
 # output_link = extract_markdown_links(markdown_string)
 # print(output_image)
 # print(output_link)
+
+# print(split_nodes_image(["This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif), another pic - ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg) and this one too: ![THE DOCTOR](https://www.rollingstone.com/wp-content/uploads/2018/06/pc1-3eeaf1a0-8577-4352-884c-dc0ec0919d51.jpg?w=1581&h=1054&crop=1)"]))
+# print(split_nodes_link(["This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"]))
