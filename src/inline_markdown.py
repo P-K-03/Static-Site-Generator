@@ -73,7 +73,7 @@ def split_nodes_image(old_nodes: List[TextNode]):
                 unprocessed_node = sub_nodes[-1]
 
                 # if the element is empty, don't create a TextNode
-                if sub_nodes[0] is not None:
+                if sub_nodes[0]:
                 # First add the Text as a TextNode and then add the image as the TextNode
                     resultant_nodes.append(TextNode(sub_nodes[0], TextType.TEXT))
                 resultant_nodes.append(TextNode(x[0], TextType.IMAGE, x[1]))
@@ -101,7 +101,7 @@ def split_nodes_link(old_nodes: List[TextNode]):
                 unprocessed_node = sub_nodes[-1]
 
                 # if the element is empty, don't create a TextNode
-                if sub_nodes[0] is not None:
+                if sub_nodes[0]:
                 # First add the Text as a TextNode and then add the link as the TextNode
                     resultant_nodes.append(TextNode(sub_nodes[0], TextType.TEXT))
                 resultant_nodes.append(TextNode(x[0], TextType.LINK, x[1]))
