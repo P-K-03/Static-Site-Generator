@@ -1,11 +1,12 @@
 from typing import List
 import unittest
 
-from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
+from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link
 from textnode import TextNode, TextType
 
 
 class TestInlineMarkdown(unittest.TestCase):
+
     def test_code_delimiter(self):
         node = TextNode("This is text with a `code block` word", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "`", TextType.CODE)
@@ -66,7 +67,7 @@ class TestInlineMarkdown(unittest.TestCase):
             new_nodes,
         )
 
-    def text_extract_markdown_images(self):
+    def test_extract_markdown_images(self):
         markdown_string: str = """Here sre some of the most popular Ben 10 aliens: ![Ghostfreak](https://static.wikia.nocookie.net/ben10/images/0/07/Ghostfreak_Ghost_Town_1.PNG/revision/latest/scale-to-width/360?cb=20140618131654), 
         ![Chromastone](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnN00wnNFW-mIGpaeg2IiIjE9e6m4CPjLgKtQQZIva4VQ6a5ACh6AEBV7iQSOf14rBzi8&usqp=CAU),
         ![Ultimate Echo Echo](https://i.ytimg.com/vi/OSNxIw6NUhk/maxresdefault.jpg) and
@@ -91,6 +92,60 @@ class TestInlineMarkdown(unittest.TestCase):
     #     output_link = extract_markdown_links(markdown_string)
     #     self.assertListEqual(output_image, [('Ben Tennyson', 'https://ben10.fandom.com/wiki/Ben_Tennyson_(Classic)')])
     #     self.assertListEqual(output_link, [('Alien X', 'https://ben10.fandom.com/wiki/Alien_X_(Classic)')])
+
+    def test_split_nodes_image_1(self):
+        node = TextNode(
+        "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
+        TextType.TEXT,
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.TEXT),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextType.TEXT),
+                TextNode(
+                    "second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"
+                ),
+            ],
+            new_nodes,
+        )
+        
+    def test_split_nodes_image_2(self):
+        node = TextNode("Image 1: ![Batman](https://media.tenor.com/j8m4rwG-sFkAAAAm/batman.webp), Image 2: ![Batmobile](https://tinyurl.com/4cjh9y8s) and the final image, Image 3: ![Batwing](https://tinyurl.com/msyzfk28). Some Text.", TextType.TEXT)
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual([TextNode('Image 1: ', TextType.TEXT), 
+                              TextNode('Batman', TextType.IMAGE, 'https://media.tenor.com/j8m4rwG-sFkAAAAm/batman.webp'), 
+                              TextNode(', Image 2: ', TextType.TEXT), 
+                              TextNode('Batmobile', TextType.IMAGE, 'https://tinyurl.com/4cjh9y8s'), 
+                              TextNode(' and the final image, Image 3: ', TextType.TEXT), TextNode('Batwing', TextType.IMAGE , 'https://tinyurl.com/msyzfk28')], new_nodes)
+    
+    def test_split_nodes_image_3(self):
+        node = TextNode("This is some text with no images.", TextType.TEXT)
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual([TextNode("This is some text with no images.", TextType.TEXT)], new_nodes)
+
+    def test_split_nodes_link_1(self):
+        node = TextNode("For further information, visit: [Support website](https://theuselessweb.com/) and this forum: [Reddit](https://www.reddit.com/r/InternetIsUseless/)", TextType.TEXT)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual([TextNode('For further information, visit: ', TextType.TEXT, None), 
+                              TextNode('Support website', TextType.LINK, 'https://theuselessweb.com/'), 
+                              TextNode(' and this forum: ', TextType.TEXT, None), 
+                              TextNode('Reddit', TextType.LINK, 'https://www.reddit.com/r/InternetIsUseless/')], new_nodes)
+    
+    def test_split_nodes_link_2(self):
+        node = TextNode("The links present in the navbar are as follows: [Home](https://www.tomarkdown.org/en), [Calculator](https://www.calculatoronline.io/), [Compressor](https://www.compress.run/), [Markdown Syntax Guide](https://www.tomarkdown.org/en/guides/markdown-syntax)", TextType.TEXT)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual([TextNode("The links present in the navbar are as follows: ", TextType.TEXT), 
+                              TextNode("Home", TextType.LINK, "https://www.tomarkdown.org/en"), TextNode(", ", TextType.TEXT, None), 
+                              TextNode("Calculator", TextType.LINK, "https://www.calculatoronline.io/"), 
+                              TextNode(", ", TextType.TEXT, None), TextNode("Compressor", TextType.LINK,"https://www.compress.run/"), 
+                              TextNode(", ", TextType.TEXT, None), TextNode("Markdown Syntax Guide", TextType.LINK, "https://www.tomarkdown.org/en/guides/markdown-syntax")], new_nodes)
+
+    def test_split_nodes_link_3(self):
+        node = TextNode("This is a sentence with no links.", TextType.TEXT)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual([TextNode("This is a sentence with no links.", TextType.TEXT)], new_nodes)
 
 if __name__ == "__main__":
     unittest.main()
