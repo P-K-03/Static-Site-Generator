@@ -125,6 +125,11 @@ class TestInlineMarkdown(unittest.TestCase):
         new_nodes = split_nodes_image([node])
         self.assertListEqual([TextNode("This is some text with no images.", TextType.TEXT)], new_nodes)
 
+    def test_split_nodes_image_single(self):
+        node = TextNode("![Loki](https://tinyurl.com/429m7byt)", TextType.TEXT)
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual([TextNode('Loki', TextType.IMAGE, 'https://tinyurl.com/429m7byt')], new_nodes)
+
     def test_split_nodes_link_1(self):
         node = TextNode("For further information, visit: [Support website](https://theuselessweb.com/) and this forum: [Reddit](https://www.reddit.com/r/InternetIsUseless/)", TextType.TEXT)
         new_nodes = split_nodes_link([node])
@@ -146,6 +151,11 @@ class TestInlineMarkdown(unittest.TestCase):
         node = TextNode("This is a sentence with no links.", TextType.TEXT)
         new_nodes = split_nodes_link([node])
         self.assertListEqual([TextNode("This is a sentence with no links.", TextType.TEXT)], new_nodes)
+
+    def test_split_nodes_link_single(self):
+        node = TextNode("[Doctor Who](https://www.doctorwho.tv/)", TextType.TEXT)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual([TextNode('Doctor Who', TextType.LINK, 'https://www.doctorwho.tv/')], new_nodes)
 
 if __name__ == "__main__":
     unittest.main()
