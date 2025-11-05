@@ -58,11 +58,11 @@ def split_nodes_image(old_nodes: List[TextNode]):
     """"""
     resultant_nodes: List = []
     for node in old_nodes:
-        images: List = extract_markdown_images(node)
+        images: List = extract_markdown_images(node.text)
         if len(images) == 0:
             resultant_nodes.append(node)
         else:
-            unprocessed_node: str = node
+            unprocessed_node: str = node.text
             for x in images:
                 # x[0] has alt text and x[1] has the image URL
                 # split the node based on the extracted image, one image at a time
@@ -86,11 +86,11 @@ def split_nodes_link(old_nodes: List[TextNode]):
     """"""
     resultant_nodes: List = []
     for node in old_nodes:
-        links: List = extract_markdown_links(node)
+        links: List = extract_markdown_links(node.text)
         if len(links) == 0:
             resultant_nodes.append(node)
         else:
-            unprocessed_node: str = node
+            unprocessed_node: str = node.text
             for x in links:
                 # x[0] has the title and x[1] has the link URL
                 # split the node based on the extracted link, one link at a time
@@ -125,5 +125,7 @@ def split_nodes_link(old_nodes: List[TextNode]):
 # print(output_image)
 # print(output_link)
 
-# print(split_nodes_image(["This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif), another pic - ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg) and this one too: ![THE DOCTOR](https://www.rollingstone.com/wp-content/uploads/2018/06/pc1-3eeaf1a0-8577-4352-884c-dc0ec0919d51.jpg?w=1581&h=1054&crop=1)"]))
+# print(split_nodes_image([TextNode("This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif), another pic - ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg) and this one too: ![THE DOCTOR](https://www.rollingstone.com/wp-content/uploads/2018/06/pc1-3eeaf1a0-8577-4352-884c-dc0ec0919d51.jpg?w=1581&h=1054&crop=1)", TextType.TEXT]))
 # print(split_nodes_link(["This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"]))
+# print(split_nodes_image([TextNode("Image 1: ![Batman](https://media.tenor.com/j8m4rwG-sFkAAAAm/batman.webp), Image 2: ![Batmobile](https://tinyurl.com/4cjh9y8s) and the final image, Image 3: ![Batwing](https://tinyurl.com/msyzfk28). Some Text.", TextType.TEXT)]))
+# print(split_nodes_link([TextNode("The links present in the navbar are as follows: [Home](https://www.tomarkdown.org/en), [Calculator](https://www.calculatoronline.io/), [Compressor](https://www.compress.run/), [Markdown Syntax Guide](https://www.tomarkdown.org/en/guides/markdown-syntax)", TextType.TEXT)]))
