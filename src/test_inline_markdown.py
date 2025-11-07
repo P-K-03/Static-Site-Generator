@@ -1,7 +1,7 @@
 from typing import List
 import unittest
 
-from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link
+from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
 from textnode import TextNode, TextType
 
 
@@ -83,16 +83,6 @@ class TestInlineMarkdown(unittest.TestCase):
         output: List = extract_markdown_links(markdown_string)
         self.assertListEqual(output, [('Home', 'https://sitegpt.ai/'), ('Tools', 'https://sitegpt.ai/tools'), ('Convert Webpage to Markdown', 'https://sitegpt.ai/tools/convert-webpage-to-markdown')])
 
-    # def test_extract_markdown_links_and_images(self):
-    #     markdown_string: str = """Ben was an ordinary 10-year-old boy until he found the Omnitrix, a powerful watch-like device that allowed him to turn into 10 different aliens.
-    #     ![Ben Tennyson](https://ben10.fandom.com/wiki/Ben_Tennyson_(Classic)).
-    #     Ben's most powerful alien is Alien X, a Celestial Sapien. This article redirects to [Alien X](https://ben10.fandom.com/wiki/Alien_X_(Classic))."""
-
-    #     output_image = extract_markdown_images(markdown_string)
-    #     output_link = extract_markdown_links(markdown_string)
-    #     self.assertListEqual(output_image, [('Ben Tennyson', 'https://ben10.fandom.com/wiki/Ben_Tennyson_(Classic)')])
-    #     self.assertListEqual(output_link, [('Alien X', 'https://ben10.fandom.com/wiki/Alien_X_(Classic)')])
-
     def test_split_nodes_image_1(self):
         node = TextNode(
         "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
@@ -118,7 +108,8 @@ class TestInlineMarkdown(unittest.TestCase):
                               TextNode('Batman', TextType.IMAGE, 'https://media.tenor.com/j8m4rwG-sFkAAAAm/batman.webp'), 
                               TextNode(', Image 2: ', TextType.TEXT), 
                               TextNode('Batmobile', TextType.IMAGE, 'https://tinyurl.com/4cjh9y8s'), 
-                              TextNode(' and the final image, Image 3: ', TextType.TEXT), TextNode('Batwing', TextType.IMAGE , 'https://tinyurl.com/msyzfk28')], new_nodes)
+                              TextNode(' and the final image, Image 3: ', TextType.TEXT), TextNode('Batwing', TextType.IMAGE , 'https://tinyurl.com/msyzfk28'),
+                                TextNode(". Some Text.", TextType.TEXT, None)], new_nodes)
     
     def test_split_nodes_image_3(self):
         node = TextNode("This is some text with no images.", TextType.TEXT)
@@ -156,6 +147,23 @@ class TestInlineMarkdown(unittest.TestCase):
         node = TextNode("[Doctor Who](https://www.doctorwho.tv/)", TextType.TEXT)
         new_nodes = split_nodes_link([node])
         self.assertListEqual([TextNode('Doctor Who', TextType.LINK, 'https://www.doctorwho.tv/')], new_nodes)
+
+    def test_text_to_textnodes(self):
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        new_nodes = text_to_textnodes(text)
+        self.assertListEqual([
+        TextNode("This is ", TextType.TEXT),
+        TextNode("text", TextType.BOLD),
+        TextNode(" with an ", TextType.TEXT),
+        TextNode("italic", TextType.ITALIC),
+        TextNode(" word and a ", TextType.TEXT),
+        TextNode("code block", TextType.CODE),
+        TextNode(" and an ", TextType.TEXT),
+        TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+        TextNode(" and a ", TextType.TEXT),
+        TextNode("link", TextType.LINK, "https://boot.dev"),], 
+        new_nodes)
+
 
 if __name__ == "__main__":
     unittest.main()
