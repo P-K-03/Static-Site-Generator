@@ -55,7 +55,8 @@ def extract_markdown_links(text: str):
     return matches
 
 def split_nodes_image(old_nodes: List[TextNode]):
-    """"""
+    """It takes a list of "old nodes" and converts the "text" type nodes that contain links into a "image". 
+    It also splits the nodes into "text" if present"""
     resultant_nodes: List = []
     for node in old_nodes:
         images: List = extract_markdown_images(node.text)
@@ -87,7 +88,8 @@ def split_nodes_image(old_nodes: List[TextNode]):
     return resultant_nodes
 
 def split_nodes_link(old_nodes: List[TextNode]):
-    """"""
+    """It takes a list of "old nodes" and converts the "text" type nodes that contain links into a "link". 
+    It also splits the nodes into "text" if present"""
     resultant_nodes: List = []
     for node in old_nodes:
         links: List = extract_markdown_links(node.text)
@@ -119,6 +121,7 @@ def split_nodes_link(old_nodes: List[TextNode]):
     return resultant_nodes
 
 def text_to_textnodes(text: str) -> List[TextNode]:
+    """Converts a raw string of markdown-flavored text into a list of TextNode objects."""
     node = TextNode(text, TextType.TEXT)
     
     # The order in which these functions are called doesn't matter
